@@ -2,8 +2,6 @@ from orm_database import ORMDatabase
 import datetime
 from flask_bcrypt import Bcrypt
 from app import App
-import jwt
-import os
 
 class User(ORMDatabase.db.Model):
     
