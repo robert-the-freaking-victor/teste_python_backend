@@ -1,37 +1,24 @@
 from sqlalchemy.orm import relationship
 from orm_database import ORMDatabase
 from sqlalchemy.types import PickleType
+from datetime import datetime
 
 class Megasena(ORMDatabase.db.Model):
     
-	__tablename__ = 'jogo_megasena'
+	__tablename__ = 'megasena'
 	id = ORMDatabase.db.Column(ORMDatabase.db.Integer, primary_key=True)
-	user_id = ORMDatabase.db.Column(ORMDatabase.db.Integer, ORMDatabase.db.ForeignKey('users.id'))
-	game = ORMDatabase.db.Column(PickleType)
-	# num1 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=False)
-	# num2 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=False)
-	# num3 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=False)
-	# num4 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=False)
-	# num5 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=False)
-	# num6 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=False)
-	# num7 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=True)
-	# num8 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=True)
-	# num9 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=True)
-	# num10 = ORMDatabase.db.Column(ORMDatabase.db.Integer, nullable=True)
+	created_at = ORMDatabase.db.Column(ORMDatabase.db.DateTime, nullable=False)
+	user_id = ORMDatabase.db.Column(ORMDatabase.db.Integer, ORMDatabase.db.ForeignKey('users.id'), nullable = False)
+	megasena_nums = relationship('MegasenaNum', backref='megasena', cascade='all, delete')
  
-	# def __init__(self, user_id, num1, num2, num3, num4, num5, num6, num7, num8, num9, num10):
-	#  	self.user_id = user_id
-	# 	self.num1 = num1
-	# 	self.num2 = num2
-	# 	self.num3 = num3
-	# 	self.num4 = num4
-	# 	self.num5 = num5
-	# 	self.num6 = num6
-	# 	self.num7 = num7
-	# 	self.num8 = num8
-	# 	self.num9 = num9
-	# 	self.num10 = num10
- 
-	def __init__(self, user_id = None, game = None):
+	def __init__(self, user_id):
 		self.user_id = user_id
-		self.game = game
+		self.created_at = datetime.now()
+  
+	def as_dict(self):
+		return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+  
+	# toDo: commom method between the models. use inheritance
+	def create(self):
+		ORMDatabase.db.session.add(self)
+		ORMDatabase.db.session.commit()
