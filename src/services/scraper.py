@@ -13,5 +13,5 @@ class Scraper:
         nums = []
         spans = soup.find_all("span", class_="zSMazd UHlKbe")
         for i in range(len(spans)):
-            nums.append(spans[i].text)
+            nums.append(int(spans[i].text))
         return nums
